@@ -17,7 +17,7 @@ import io.eiren.util.Util;
  */
 public class YamlNode {
 
-	protected Map<String, Object> root;
+	public Map<String, Object> root;
 
 	public YamlNode(Map<String, Object> root) {
 		this.root = root;
