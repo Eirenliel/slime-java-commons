@@ -206,6 +206,23 @@ public final class Transform implements Cloneable, java.io.Serializable {
             .addLocal(parent.translation);
         return this;
     }
+    
+    /**
+     * Same as {@link #combineWithParent(Transform)}, but assumes that rotation
+     * is global, so it's not modified.
+     * @param parent
+     * @return
+     */
+    public Transform combineWithParentGlobalRotation(Transform parent) {
+        scale.multLocal(parent.scale);
+        translation.multLocal(parent.scale);
+        
+        parent
+            .rot
+            .multLocal(translation)
+            .addLocal(parent.translation);
+        return this;
+    }
 
     /**
      * Sets this matrix's translation to the given x,y,z values.
