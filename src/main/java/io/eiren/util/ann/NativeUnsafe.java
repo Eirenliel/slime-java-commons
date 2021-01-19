@@ -1,4 +1,4 @@
-package essentia.util.ann;
+package io.eiren.util.ann;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

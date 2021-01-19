@@ -1,4 +1,4 @@
-package essentia.util.collections;
+package io.eiren.util.collections;
 
 import java.util.Collection;
 

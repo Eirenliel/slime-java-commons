@@ -1,4 +1,4 @@
-package essentia.util.collections;
+package io.eiren.util.collections;
 
 import java.util.AbstractList;
 import java.util.Arrays;

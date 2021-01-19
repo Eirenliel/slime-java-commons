@@ -2,7 +2,7 @@ package io.eiren.util.logging;
 
 import java.util.List;
 
-import essentia.util.collections.FastList;
+import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.DefaultGLog.LogEntry;
 
 public class LoggerRecorder {
