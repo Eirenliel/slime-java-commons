@@ -38,6 +38,8 @@ import java.util.logging.Logger;
 
 import com.jme3.util.TempVars;
 
+import io.eiren.math.FloatMath;
+
 /**
  * <code>Quaternion</code> defines a single example of a more general class of
  * hypercomplex numbers. Quaternions extends a rotation in three dimensions to a
@@ -632,7 +634,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	 */
 	public Quaternion fromAngleAxis(float angle, float x, float y, float z) {
 		float length = x * x + y * y + z * z;
-		if (length != 1f && length != 0f){
+		if(length != 1f && length != 0f) {
 			length = 1.0f / FastMath.sqrt(length);
 			return fromAngleNormalAxis(angle, x * length, y * length, z * length);
 		} else {
@@ -1519,6 +1521,34 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 		} catch(CloneNotSupportedException e) {
 			throw new AssertionError(); // can not happen
 		}
+	}
+	
+	/**
+	 * Sets this quaternion to be a rotation from vec1 to vec2.
+	 * <p>Based on implementation from here: https://github.com/toji/gl-matrix/blob/f0583ef53e94bc7e78b78c8a24f09ed5e2f7a20c/src/gl-matrix/quat.js#L54
+	 * @param vec1
+	 * @param vec2
+	 * @return this quaternion
+	 */
+	public Quaternion angleBetweenVectors(Vector3f vec1, Vector3f vec2) {
+		float dot = vec1.dot(vec2);
+		if(FloatMath.lessOrEqualsWithEpsilon(dot, -1)) {
+			Vector3f cross = vec1.cross(Vector3f.UNIT_X);
+			if(FloatMath.lessOrEqualsToZero(cross.length()))
+				cross = vec1.cross(Vector3f.UNIT_Y);
+			cross.normalizeLocal();
+			fromAngleAxis(FloatMath.PI, cross);
+		} else if(FloatMath.greaterOrEqualsWithEpsilon(dot, 1)) {
+			loadIdentity();
+		} else {
+			Vector3f cross = vec1.cross(vec2);
+			x = cross.x;
+			y = cross.y;
+			z = cross.z;
+			w = 1 + dot;
+			normalizeLocal();
+		}
+		return this;
 	}
 	
 	public static boolean isIdentity(Quaternion q) {

@@ -1143,4 +1143,7 @@ public final class Vector3f implements Cloneable, java.io.Serializable {
 		throw new IllegalArgumentException("index must be either 0, 1 or 2");
 	}
 	
+	public static float angleBetweenVectors(Vector2f vec1, Vector2f vec2) {
+		return (float) Math.atan2(vec1.x * vec2.y - vec1.y * vec2.x, vec1.x * vec2.x + vec1.y * vec2.y);
+	}
 }
