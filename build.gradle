@@ -29,12 +29,7 @@ tasks.withType(Javadoc){
     options.encoding = 'UTF-8'
 }
 
-repositories {
-    // Use jcenter for resolving dependencies.
-    // You can declare any Maven/Ivy/file repository here.
-    jcenter()
-    mavenCentral()
-}
+
 
 dependencies {
     // This dependency is exported to consumers, that is to say found on their compile classpath.
@@ -48,5 +43,5 @@ dependencies {
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
     // https://mvnrepository.com/artifact/org.eclipse.jdt/org.eclipse.jdt.annotation
-	compile group: 'org.eclipse.jdt', name: 'org.eclipse.jdt.annotation', version: '2.0.0'
+	implementation group: 'org.eclipse.jdt', name: 'org.eclipse.jdt.annotation', version: '2.0.0'
 }
