@@ -327,6 +327,72 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	}
 	
 	/**
+	 * Returns Euler rotation angle around x axis (pitch).
+	 * @return
+	 * @see #toAngles(float[])
+	 */
+	public float getPitch() {
+		float sqw = w * w;
+		float sqx = x * x;
+		float sqy = y * y;
+		float sqz = z * z;
+		float unit = sqx + sqy + sqz + sqw; // if normalized is one, otherwise
+		// is correction factor
+		float test = x * y + z * w;
+		if(test > 0.499 * unit) { // singularity at north pole
+			return 0;
+		} else if(test < -0.499 * unit) { // singularity at south pole
+			return 0;
+		} else {
+			return FastMath.atan2(2 * x * w - 2 * y * z, -sqx + sqy - sqz + sqw); // pitch or attitude
+		}
+	}
+	
+	/**
+	 * Returns Euler rotation angle around y axis (yaw).
+	 * @return
+	 * @see #toAngles(float[])
+	 */
+	public float getYaw() {
+		float sqw = w * w;
+		float sqx = x * x;
+		float sqy = y * y;
+		float sqz = z * z;
+		float unit = sqx + sqy + sqz + sqw; // if normalized is one, otherwise
+		// is correction factor
+		float test = x * y + z * w;
+		if(test > 0.499 * unit) { // singularity at north pole
+			return 2 * FastMath.atan2(x, w);
+		} else if(test < -0.499 * unit) { // singularity at south pole
+			return -2 * FastMath.atan2(x, w);
+		} else {
+			return FastMath.atan2(2 * y * w - 2 * x * z, sqx - sqy - sqz + sqw); // yaw or bank
+		}
+	}
+	
+	/**
+	 * Returns Euler rotation angle around z axis (roll).
+	 * @return
+	 * @see #toAngles(float[])
+	 */
+	public float getRoll() {
+		float sqw = w * w;
+		float sqx = x * x;
+		float sqy = y * y;
+		float sqz = z * z;
+		float unit = sqx + sqy + sqz + sqw; // if normalized is one, otherwise
+		// is correction factor
+		float test = x * y + z * w;
+		if(test > 0.499 * unit) { // singularity at north pole
+			return FastMath.HALF_PI;
+		} else if(test < -0.499 * unit) { // singularity at south pole
+			return -FastMath.HALF_PI;
+		} else {
+			return FastMath.asin(2 * test / unit); // roll or heading
+		}
+	}
+	
+	/**
 	 * 
 	 * <code>fromRotationMatrix</code> generates a quaternion from a supplied
 	 * matrix. This matrix is assumed to be a rotational matrix.
