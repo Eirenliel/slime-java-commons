@@ -67,6 +67,46 @@ public class LogManager {
 	public static void enablePreciseTimestamp() {
 		handler.setFormatter(new PreciseConsoleLogFormatter());
 	}
+	
+	public static void info(String message) {
+		log.info(message);
+	}
+
+	public static void severe(String message) {
+		log.severe(message);
+	}
+
+	public static void warning(String message) {
+		log.warning(message);
+	}
+
+	public static void debug(String message) {
+		log.debug(message);
+	}
+
+	public static void info(String message, Throwable t) {
+		log.info(message, t);
+	}
+
+	public static void severe(String message, Throwable t) {
+		log.severe(message, t);
+	}
+
+	public static void warning(String message, Throwable t) {
+		log.warning(message, t);
+	}
+
+	public static void debug(String message, Throwable t) {
+		log.debug(message, t);
+	}
+
+	public static void log(Level level, String message) {
+		log.log(level, message);
+	}
+
+	public static void log(Level level, String message, Throwable t) {
+		log.log(level,  message, t);
+	}
 
 	static {
 		boolean hasConsoleHandler = false;
