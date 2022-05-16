@@ -6,11 +6,6 @@
  * User Manual available at https://docs.gradle.org/6.3/userguide/java_library_plugin.html
  */
 
-plugins {
-	id 'application'
-	id "com.github.johnrengelman.shadow" version "7.1.2"
-}
-
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -49,10 +44,4 @@ dependencies {
 }
 test {
 	useJUnitPlatform()
-}
-
-shadowJar {
-	archiveBaseName.set('slimevr')
-	archiveClassifier.set('')
-	archiveVersion.set('')
 }
