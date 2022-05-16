@@ -6,6 +6,10 @@
  * User Manual available at https://docs.gradle.org/6.3/userguide/java_library_plugin.html
  */
 
+plugins {
+	id 'application'
+}
+
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
