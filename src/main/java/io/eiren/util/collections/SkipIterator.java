@@ -2,8 +2,6 @@ package io.eiren.util.collections;
 
 import java.util.Iterator;
 
-import org.eclipse.jdt.annotation.Nullable;
-
 /**
  * {@link Iterator} that can return null on {@link #next()} or can lie on {@link #hasNext()}. It is <b>not thread-secure!</b>
  * 
@@ -12,5 +10,5 @@ import org.eclipse.jdt.annotation.Nullable;
 public interface SkipIterator<E> extends Iterator<E> {
 	
 	@Override
-	@Nullable E next();
+	E next();
 }

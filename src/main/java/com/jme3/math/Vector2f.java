@@ -634,7 +634,8 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
      * 
      * @return the hash code value of this vector.
      */
-    public int hashCode() {
+    @Override
+	public int hashCode() {
         int hash = 37;
         hash += 37 * hash + Float.floatToIntBits(x);
         hash += 37 * hash + Float.floatToIntBits(y);
@@ -675,7 +676,8 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
      *            the object to compare for equality
      * @return true if they are equal
      */
-    public boolean equals(Object o) {
+    @Override
+	public boolean equals(Object o) {
         if (!(o instanceof Vector2f)) {
             return false;
         }
@@ -699,7 +701,8 @@ public final class Vector2f implements Cloneable, java.io.Serializable {
      * 
      * @return the string representation of this vector.
      */
-    public String toString() {
+    @Override
+	public String toString() {
         return "(" + x + ", " + y + ")";
     }
 

@@ -15,8 +15,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
-import org.eclipse.jdt.annotation.Nullable;
-
 @SuppressWarnings("unchecked")
 public class FastList<E> extends AbstractList<E> implements RandomAccess, Cloneable, RemoveAtSwapList<E> {
 	
@@ -521,7 +519,7 @@ public class FastList<E> extends AbstractList<E> implements RandomAccess, Clonea
 		}
 		
 		@Override
-		public @Nullable E next() {
+		public E next() {
 			Object[] arr = array;
 			if(arr.length > position) {
 				return (E) arr[position++];
