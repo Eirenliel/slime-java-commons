@@ -2,39 +2,40 @@ package org.json;
 
 import java.util.Map.Entry;
 
+
 public class JSONUtil {
-	
-	public static JSONObject toJSON(JSONEntry ... entries) {
+
+	public static JSONObject toJSON(JSONEntry... entries) {
 		return o(entries);
 	}
 
-	public static JSONObject o(JSONEntry ... entries) {
+	public static JSONObject o(JSONEntry... entries) {
 		JSONObject object = new JSONObject();
-		for(int i = 0; i < entries.length; ++i) {
+		for (int i = 0; i < entries.length; ++i) {
 			JSONEntry e = entries[i];
 			object.put(e.getKey(), e.getValue());
 		}
 		return object;
 	}
-	
-	public static JSONArray a(Object ... values) {
+
+	public static JSONArray a(Object... values) {
 		return new JSONArray(values);
 	}
-	
+
 	public static JSONEntry e(String k, Object v) {
 		return new JSONEntry(k, v);
 	}
-	
+
 	public static class JSONEntry implements Entry<String, Object> {
 
 		private String key;
 		private Object value;
-		
+
 		public JSONEntry(String key, Object value) {
 			this.key = key;
 			this.value = value;
 		}
-		
+
 		@Override
 		public String getKey() {
 			return this.key;
@@ -51,6 +52,6 @@ public class JSONUtil {
 			this.value = value;
 			return oldValue;
 		}
-		
+
 	}
 }

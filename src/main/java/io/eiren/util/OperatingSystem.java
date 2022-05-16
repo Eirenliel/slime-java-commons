@@ -2,8 +2,9 @@ package io.eiren.util;
 
 import java.io.File;
 
+
 public enum OperatingSystem {
-	
+
 	//@formatter:off
 	LINUX("linux", new String[]{"linux", "unix"}),
 	WINDOWS("windows", new String[]{"win"}),

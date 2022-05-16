@@ -11,6 +11,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 public class LogManager {
 
 	private static AtomicBoolean initialized = new AtomicBoolean(false);
@@ -19,15 +20,16 @@ public class LogManager {
 	public static final IGLog log = new DefaultGLog(global);
 	public static ConsoleHandler handler;
 
-	public static void initialize(File logsDir, File mainLogDir) throws SecurityException, IOException {
-		if(initialized.getAndSet(true))
+	public static void initialize(File logsDir, File mainLogDir)
+		throws SecurityException, IOException {
+		if (initialized.getAndSet(true))
 			return;
 		FileLogFormatter loc = new FileLogFormatter();
-		if(mainLogDir != null) {
-			if(!mainLogDir.exists())
+		if (mainLogDir != null) {
+			if (!mainLogDir.exists())
 				mainLogDir.mkdirs();
 			File lastLogFile = new File(mainLogDir, "log_last.log");
-			if(lastLogFile.exists())
+			if (lastLogFile.exists())
 				lastLogFile.delete();
 			File mainLog = new File(mainLogDir, "log_main.log");
 			FileHandler mHandler = new FileHandler(mainLog.getPath(), true);
@@ -37,18 +39,24 @@ public class LogManager {
 			global.addHandler(mHandler);
 			global.addHandler(filehandler);
 		}
-		if(logsDir != null) {
-			if(!logsDir.exists())
+		if (logsDir != null) {
+			if (!logsDir.exists())
 				logsDir.mkdir();
-			if(!logsDir.isDirectory())
+			if (!logsDir.isDirectory())
 				System.out.println("*** WARNING *** LOG FOLDER IS NOT A DIRECTORY!");
-			File currentLog = new File(logsDir, "log_" + new SimpleDateFormat("yyyy-MM-dd").format(Long.valueOf(System.currentTimeMillis())) + ".log");
+			File currentLog = new File(
+				logsDir,
+				"log_"
+					+ new SimpleDateFormat("yyyy-MM-dd")
+						.format(Long.valueOf(System.currentTimeMillis()))
+					+ ".log"
+			);
 			FileHandler filehandler2 = new FileHandler(currentLog.getPath(), true);
 			filehandler2.setFormatter(loc);
 			global.addHandler(filehandler2);
 		}
 	}
-	
+
 	public static void replaceMainHandler(ConsoleHandler newHandler) {
 		handler.close();
 		global.removeHandler(handler);
@@ -63,11 +71,11 @@ public class LogManager {
 	public static void removeHandler(Handler remove) {
 		global.removeHandler(remove);
 	}
-	
+
 	public static void enablePreciseTimestamp() {
 		handler.setFormatter(new PreciseConsoleLogFormatter());
 	}
-	
+
 	public static void info(String message) {
 		log.info(message);
 	}
@@ -105,23 +113,23 @@ public class LogManager {
 	}
 
 	public static void log(Level level, String message, Throwable t) {
-		log.log(level,  message, t);
+		log.log(level, message, t);
 	}
 
 	static {
 		boolean hasConsoleHandler = false;
-		for(Handler h : global.getHandlers()) {
-			if(h instanceof ConsoleHandler) {
+		for (Handler h : global.getHandlers()) {
+			if (h instanceof ConsoleHandler) {
 				handler = (ConsoleHandler) h;
 				hasConsoleHandler = true;
 			}
 		}
-		if(!hasConsoleHandler) {
+		if (!hasConsoleHandler) {
 			handler = new ConsoleHandler();
 			global.addHandler(handler);
 		}
-		handler.setFormatter(new ShortConsoleLogFormatter());	
-		
+		handler.setFormatter(new ShortConsoleLogFormatter());
+
 		System.setOut(new PrintStream(new LoggerOutputStream(log, Level.INFO), true));
 		System.setErr(new PrintStream(new LoggerOutputStream(log, Level.SEVERE), true));
 	}

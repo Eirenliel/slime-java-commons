@@ -32,62 +32,62 @@
 package com.jme3.system;
 
 /**
- * <code>NanoTimer</code> is a System.nanoTime implementation of <code>Timer</code>.
- * This is primarily useful for headless applications running on a server.
+ * <code>NanoTimer</code> is a System.nanoTime implementation of
+ * <code>Timer</code>. This is primarily useful for headless applications
+ * running on a server.
  * 
  * @author Matthew D. Hicks
  */
 public class NanoTimer extends Timer {
-	
+
 	private static final long TIMER_RESOLUTION = 1000000000L;
 	private static final float INVERSE_TIMER_RESOLUTION = 1f / TIMER_RESOLUTION;
-	
+
 	private long startTime;
 	private long previousTime;
 	private float tpf;
 	private float fps;
 	private long currentTime;
-	
+
 	public NanoTimer() {
 		startTime = System.nanoTime();
 	}
-	
+
 	/**
-	 * Returns the time in seconds. The timer starts
-	 * at 0.0 seconds.
+	 * Returns the time in seconds. The timer starts at 0.0 seconds.
 	 *
 	 * @return the current time in seconds
 	 */
-	
+
 	protected long getTimeInternal() {
 		return System.nanoTime() - startTime;
 	}
-	
+
 	@Override
 	public float getTimeInSeconds() {
 		return getTime() * INVERSE_TIMER_RESOLUTION;
 	}
-	
+
 	@Override
 	public long getTime() {
 		return currentTime;
 	}
-	
+
 	@Override
 	public long getResolution() {
 		return TIMER_RESOLUTION;
 	}
-	
+
 	@Override
 	public float getFrameRate() {
 		return fps;
 	}
-	
+
 	@Override
 	public float getTimePerFrame() {
 		return tpf;
 	}
-	
+
 	@Override
 	public void update() {
 		currentTime = getTimeInternal();
@@ -95,7 +95,7 @@ public class NanoTimer extends Timer {
 		fps = 1.0f / tpf;
 		previousTime = getTime();
 	}
-	
+
 	@Override
 	public void reset() {
 		startTime = System.nanoTime();

@@ -5,6 +5,7 @@ import java.util.List;
 import io.eiren.util.collections.FastList;
 import io.eiren.util.logging.DefaultGLog.LogEntry;
 
+
 public class LoggerRecorder {
 
 	private final List<LogEntry> recorded = new FastList<LogEntry>();

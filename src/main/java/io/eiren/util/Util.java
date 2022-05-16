@@ -9,73 +9,79 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+
 public class Util {
 
 	public static void close(Object r) {
 		try {
-			if(r != null) {
-				if(r instanceof Closeable)
+			if (r != null) {
+				if (r instanceof Closeable)
 					((Closeable) r).close();
-				else if(r instanceof AutoCloseable)
+				else if (r instanceof AutoCloseable)
 					((AutoCloseable) r).close();
 			}
-		} catch(Exception e) {}
+		} catch (Exception e) {}
 	}
-	
+
 	public static void close(Object r1, Object r2) {
 		close(r1);
 		close(r2);
 	}
-	
+
 	public static void close(Object... r) {
-		for(int i = 0; i < r.length; ++i)
+		for (int i = 0; i < r.length; ++i)
 			try {
-				if(r[i] != null) {
-					if(r[i] instanceof Closeable)
+				if (r[i] != null) {
+					if (r[i] instanceof Closeable)
 						((Closeable) r[i]).close();
-					else if(r[i] instanceof AutoCloseable)
+					else if (r[i] instanceof AutoCloseable)
 						((AutoCloseable) r[i]).close();
 				}
-			} catch(Exception e) {}
+			} catch (Exception e) {}
 	}
-	
+
 	public static void close(AutoCloseable... r) {
-		for(int i = 0; i < r.length; ++i)
+		for (int i = 0; i < r.length; ++i)
 			try {
-				if(r[i] != null)
+				if (r[i] != null)
 					r[i].close();
-			} catch(Exception e) {}
+			} catch (Exception e) {}
 	}
-	
+
 	public static void close(Closeable... r) {
-		for(int i = 0; i < r.length; ++i)
+		for (int i = 0; i < r.length; ++i)
 			try {
-				if(r[i] != null)
+				if (r[i] != null)
 					r[i].close();
-			} catch(Exception e) {}
+			} catch (Exception e) {}
 	}
-	
+
 	/**
-	 * <p>Performs a deep toString of provided object. It shows
-	 * content of arrays, collections and maps (trove not supported yet).</p>
-	 * <p><b>Highly ineffective, use only for debug.</b></p>
+	 * <p>
+	 * Performs a deep toString of provided object. It shows content of arrays,
+	 * collections and maps (trove not supported yet).
+	 * </p>
+	 * <p>
+	 * <b>Highly ineffective, use only for debug.</b>
+	 * </p>
+	 * 
 	 * @param object
 	 * @return
 	 */
 	public static String toString(Object object) {
-		if(object == null)
+		if (object == null)
 			return "null";
 		StringBuilder buf = new StringBuilder();
 		elementToString(object, buf, new HashSet<Object>());
 		return buf.toString();
 	}
-	
+
 	private static void deepToString(Map<Object, Object> m, StringBuilder buf, Set<Object> dejaVu) {
-		if(m == null) {
+		if (m == null) {
 			buf.append("null");
 			return;
 		}
-		if(m.size() == 0) {
+		if (m.size() == 0) {
 			buf.append("{}");
 			return;
 		}
@@ -83,8 +89,8 @@ public class Util {
 		buf.append('{');
 		Iterator<Entry<Object, Object>> iterator = m.entrySet().iterator();
 		boolean has = false;
-		while(iterator.hasNext()) {
-			if(has)
+		while (iterator.hasNext()) {
+			if (has)
 				buf.append(',');
 			Entry<Object, Object> e = iterator.next();
 			elementToString(e.getKey(), buf, dejaVu);
@@ -95,25 +101,29 @@ public class Util {
 		buf.append('}');
 		dejaVu.remove(m);
 	}
-	
-	private static void deepToString(Collection<Object> list, StringBuilder buf, Set<Object> dejaVu) {
+
+	private static void deepToString(
+		Collection<Object> list,
+		StringBuilder buf,
+		Set<Object> dejaVu
+	) {
 		Object[] array = list.toArray();
 		deepToString(array, buf, dejaVu);
 	}
-	
+
 	private static void deepToString(Object[] a, StringBuilder buf, Set<Object> dejaVu) {
-		if(a == null) {
+		if (a == null) {
 			buf.append("null");
 			return;
 		}
-		if(a.length == 0) {
+		if (a.length == 0) {
 			buf.append("[]");
 			return;
 		}
 		dejaVu.add(a);
 		buf.append('[');
-		for(int i = 0; i < a.length; i++) {
-			if(i != 0)
+		for (int i = 0; i < a.length; i++) {
+			if (i != 0)
 				buf.append(',');
 			Object element = a[i];
 			elementToString(element, buf, dejaVu);
@@ -121,42 +131,42 @@ public class Util {
 		buf.append(']');
 		dejaVu.remove(a);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private static void elementToString(Object element, StringBuilder buf, Set<Object> dejaVu) {
-		if(element == null) {
+		if (element == null) {
 			buf.append("null");
 		} else {
 			Class<?> eClass = element.getClass();
-			if(eClass.isArray()) {
-				if(eClass == byte[].class)
+			if (eClass.isArray()) {
+				if (eClass == byte[].class)
 					buf.append(Arrays.toString((byte[]) element));
-				else if(eClass == short[].class)
+				else if (eClass == short[].class)
 					buf.append(Arrays.toString((short[]) element));
-				else if(eClass == int[].class)
+				else if (eClass == int[].class)
 					buf.append(Arrays.toString((int[]) element));
-				else if(eClass == long[].class)
+				else if (eClass == long[].class)
 					buf.append(Arrays.toString((long[]) element));
-				else if(eClass == char[].class)
+				else if (eClass == char[].class)
 					buf.append(Arrays.toString((char[]) element));
-				else if(eClass == float[].class)
+				else if (eClass == float[].class)
 					buf.append(Arrays.toString((float[]) element));
-				else if(eClass == double[].class)
+				else if (eClass == double[].class)
 					buf.append(Arrays.toString((double[]) element));
-				else if(eClass == boolean[].class)
+				else if (eClass == boolean[].class)
 					buf.append(Arrays.toString((boolean[]) element));
 				else { // element is an array of object references
-					if(dejaVu.contains(element))
+					if (dejaVu.contains(element))
 						buf.append("[...]");
 					else
 						deepToString((Object[]) element, buf, dejaVu);
 				}
 			} else { // element is non-null and not an array
-				if(element instanceof Collection)
+				if (element instanceof Collection)
 					deepToString((Collection<Object>) element, buf, dejaVu);
-				else if(element instanceof Map)
+				else if (element instanceof Map)
 					deepToString((Map<Object, Object>) element, buf, dejaVu);
-				else if(element instanceof CharSequence)
+				else if (element instanceof CharSequence)
 					buf.append('"').append(element.toString()).append('"');
 				else
 					buf.append(element.toString());

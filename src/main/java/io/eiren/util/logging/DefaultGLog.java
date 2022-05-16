@@ -4,6 +4,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 public class DefaultGLog extends Thread implements IGLog {
 
 	private final Logger logger;
@@ -45,7 +46,7 @@ public class DefaultGLog extends Thread implements IGLog {
 	public void info(String message) {
 		add(new LogEntry(Level.INFO, message));
 	}
-	
+
 	@Override
 	public void info(String message, Throwable t) {
 		add(new LogEntry(Level.INFO, message, t));
@@ -55,7 +56,7 @@ public class DefaultGLog extends Thread implements IGLog {
 	public void severe(String message) {
 		add(new LogEntry(Level.SEVERE, message));
 	}
-	
+
 	@Override
 	public void severe(String message, Throwable t) {
 		add(new LogEntry(Level.SEVERE, message, t));
@@ -65,7 +66,7 @@ public class DefaultGLog extends Thread implements IGLog {
 	public void warning(String message) {
 		add(new LogEntry(Level.WARNING, message));
 	}
-	
+
 	@Override
 	public void warning(String message, Throwable t) {
 		add(new LogEntry(Level.WARNING, message, t));
@@ -75,7 +76,7 @@ public class DefaultGLog extends Thread implements IGLog {
 	public void debug(String message) {
 		add(new LogEntry(Level.INFO, "[DBG] " + message));
 	}
-	
+
 	@Override
 	public void debug(String message, Throwable t) {
 		add(new LogEntry(Level.INFO, "[DBG] " + message, t));
@@ -94,13 +95,11 @@ public class DefaultGLog extends Thread implements IGLog {
 	private void add(LogEntry entry) {
 		try {
 			queue.put(entry);
-		} catch(InterruptedException e) {
-		}
+		} catch (InterruptedException e) {}
 		try {
-			if(recorder != null)
+			if (recorder != null)
 				recorder.addEntry(entry);
-		} catch(NullPointerException e) {
-		}
+		} catch (NullPointerException e) {}
 	}
 
 	@Override
@@ -125,15 +124,14 @@ public class DefaultGLog extends Thread implements IGLog {
 
 	@Override
 	public void run() {
-		while(true) {
+		while (true) {
 			try {
 				LogEntry log = queue.take();
-				if(log.t != null)
+				if (log.t != null)
 					logger.log(log.level, log.message, log.t);
 				else
 					logger.log(log.level, log.message);
-			} catch(InterruptedException e) {
-			}
+			} catch (InterruptedException e) {}
 		}
 	}
 }

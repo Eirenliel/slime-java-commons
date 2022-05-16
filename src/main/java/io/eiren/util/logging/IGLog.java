@@ -2,6 +2,7 @@ package io.eiren.util.logging;
 
 import java.util.logging.Level;
 
+
 public interface IGLog {
 
 	public void info(String message);

@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
+
 public class ShortConsoleLogFormatter extends Formatter {
 
 	protected final SimpleDateFormat date;
@@ -13,11 +14,11 @@ public class ShortConsoleLogFormatter extends Formatter {
 	public ShortConsoleLogFormatter() {
 		this.date = createDateFormat();
 	}
-	
+
 	protected SimpleDateFormat createDateFormat() {
 		return new SimpleDateFormat("HH:mm:ss");
 	}
-	
+
 	protected void buildMessage(StringBuilder builder, LogRecord record) {
 		builder.append(date.format(record.getMillis()));
 		builder.append(" [");
@@ -31,10 +32,10 @@ public class ShortConsoleLogFormatter extends Formatter {
 	public String format(LogRecord record) {
 		StringBuilder builder = new StringBuilder();
 		Throwable ex = record.getThrown();
-		
+
 		buildMessage(builder, record);
 
-		if(ex != null) {
+		if (ex != null) {
 			StringWriter writer = new StringWriter();
 			ex.printStackTrace(new PrintWriter(writer));
 			builder.append(writer);
@@ -42,9 +43,14 @@ public class ShortConsoleLogFormatter extends Formatter {
 
 		String message = builder.toString();
 		Object parameters[] = record.getParameters();
-		if(parameters == null || parameters.length == 0)
+		if (parameters == null || parameters.length == 0)
 			return message;
-		if(message.indexOf("{0") >= 0 || message.indexOf("{1") >= 0 || message.indexOf("{2") >= 0 || message.indexOf("{3") >= 0)
+		if (
+			message.indexOf("{0") >= 0
+				|| message.indexOf("{1") >= 0
+				|| message.indexOf("{2") >= 0
+				|| message.indexOf("{3") >= 0
+		)
 			return java.text.MessageFormat.format(message, parameters);
 		return message;
 	}
