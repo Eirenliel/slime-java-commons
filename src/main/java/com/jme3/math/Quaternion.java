@@ -841,10 +841,6 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 			result = -result;
 		}
 
-		// Set the first and second scale for the interpolation
-		float scale0 = 1 - t;
-		float scale1 = t;
-
 		// Get the angle between the 2 quaternions,
 		// and then store the sin() of that angle
 		float theta = FastMath.acos(result);
@@ -852,8 +848,8 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 
 		// Calculate the scale for q1 and q2, according to the angle and
 		// its sine value
-		scale0 = FastMath.sin((1 - t) * theta) * invSinTheta;
-		scale1 = FastMath.sin((t * theta)) * invSinTheta;
+		float scale0 = FastMath.sin((1 - t) * theta) * invSinTheta;
+		float scale1 = FastMath.sin((t * theta)) * invSinTheta;
 
 		// Calculate the x, y, z and w values for the quaternion by using a
 		// special
@@ -905,10 +901,6 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 			result = -result;
 		}
 
-		// Set the first and second scale for the interpolation
-		float scale0 = 1 - changeAmnt;
-		float scale1 = changeAmnt;
-
 		// Get the angle between the 2 quaternions, and then store the sin()
 		// of that angle
 		float theta = FastMath.acos(result);
@@ -916,8 +908,8 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 
 		// Calculate the scale for q1 and q2, according to the angle and
 		// its sine value
-		scale0 = FastMath.sin((1 - changeAmnt) * theta) * invSinTheta;
-		scale1 = FastMath.sin((changeAmnt * theta)) * invSinTheta;
+		float scale0 = FastMath.sin((1 - changeAmnt) * theta) * invSinTheta;
+		float scale1 = FastMath.sin((changeAmnt * theta)) * invSinTheta;
 
 		// Calculate the x, y, z and w values for the quaternion by using a
 		// special
