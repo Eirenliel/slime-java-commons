@@ -817,6 +817,18 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 			this.set(q1);
 			return this;
 		}
+		if (t == 0) {
+			return q1;
+		}
+		if (t == 1) {
+			return q2;
+		}
+		if (t == 0.5f) {
+			// nlerp is more performant than slerp
+			// and is equivalent for 0.5
+			q1.nlerp(q2, t);
+			return q1;
+		}
 
 		float result = (q1.x * q2.x) + (q1.y * q2.y) + (q1.z * q2.z) + (q1.w * q2.w);
 
@@ -833,18 +845,15 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 		float scale0 = 1 - t;
 		float scale1 = t;
 
-		// Check if the angle between the 2 quaternions was big enough to
-		// warrant such calculations
-		if ((1 - result) > 0.1f) {// Get the angle between the 2 quaternions,
-			// and then store the sin() of that angle
-			float theta = FastMath.acos(result);
-			float invSinTheta = 1f / FastMath.sin(theta);
+		// Get the angle between the 2 quaternions,
+		// and then store the sin() of that angle
+		float theta = FastMath.acos(result);
+		float invSinTheta = 1f / FastMath.sin(theta);
 
-			// Calculate the scale for q1 and q2, according to the angle and
-			// it's sine value
-			scale0 = FastMath.sin((1 - t) * theta) * invSinTheta;
-			scale1 = FastMath.sin((t * theta)) * invSinTheta;
-		}
+		// Calculate the scale for q1 and q2, according to the angle and
+		// its sine value
+		scale0 = FastMath.sin((1 - t) * theta) * invSinTheta;
+		scale1 = FastMath.sin((t * theta)) * invSinTheta;
 
 		// Calculate the x, y, z and w values for the quaternion by using a
 		// special
@@ -869,6 +878,21 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 		if (this.x == q2.x && this.y == q2.y && this.z == q2.z && this.w == q2.w) {
 			return;
 		}
+		if (changeAmnt == 0) {
+			return;
+		}
+		if (changeAmnt == 1) {
+			this.x = q2.x;
+			this.y = q2.y;
+			this.z = q2.z;
+			this.w = q2.w;
+			return;
+		}
+		if (changeAmnt == 0.5f) {
+			// nlerp is more performant than slerp
+			// and is equivalent for 0.5
+			nlerp(q2, changeAmnt);
+		}
 
 		float result = (this.x * q2.x) + (this.y * q2.y) + (this.z * q2.z) + (this.w * q2.w);
 
@@ -885,19 +909,15 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 		float scale0 = 1 - changeAmnt;
 		float scale1 = changeAmnt;
 
-		// Check if the angle between the 2 quaternions was big enough to
-		// warrant such calculations
-		if ((1 - result) > 0.1f) {
-			// Get the angle between the 2 quaternions, and then store the sin()
-			// of that angle
-			float theta = FastMath.acos(result);
-			float invSinTheta = 1f / FastMath.sin(theta);
+		// Get the angle between the 2 quaternions, and then store the sin()
+		// of that angle
+		float theta = FastMath.acos(result);
+		float invSinTheta = 1f / FastMath.sin(theta);
 
-			// Calculate the scale for q1 and q2, according to the angle and
-			// it's sine value
-			scale0 = FastMath.sin((1 - changeAmnt) * theta) * invSinTheta;
-			scale1 = FastMath.sin((changeAmnt * theta)) * invSinTheta;
-		}
+		// Calculate the scale for q1 and q2, according to the angle and
+		// its sine value
+		scale0 = FastMath.sin((1 - changeAmnt) * theta) * invSinTheta;
+		scale1 = FastMath.sin((changeAmnt * theta)) * invSinTheta;
 
 		// Calculate the x, y, z and w values for the quaternion by using a
 		// special
