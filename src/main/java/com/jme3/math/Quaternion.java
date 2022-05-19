@@ -817,18 +817,6 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 			this.set(q1);
 			return this;
 		}
-		if (t == 0) {
-			return q1;
-		}
-		if (t == 1) {
-			return q2;
-		}
-		if (t == 0.5f) {
-			// nlerp is more performant than slerp
-			// and is equivalent for 0.5
-			q1.nlerp(q2, t);
-			return q1;
-		}
 
 		float result = (q1.x * q2.x) + (q1.y * q2.y) + (q1.z * q2.z) + (q1.w * q2.w);
 
@@ -873,21 +861,6 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	public void slerp(Quaternion q2, float changeAmnt) {
 		if (this.x == q2.x && this.y == q2.y && this.z == q2.z && this.w == q2.w) {
 			return;
-		}
-		if (changeAmnt == 0) {
-			return;
-		}
-		if (changeAmnt == 1) {
-			this.x = q2.x;
-			this.y = q2.y;
-			this.z = q2.z;
-			this.w = q2.w;
-			return;
-		}
-		if (changeAmnt == 0.5f) {
-			// nlerp is more performant than slerp
-			// and is equivalent for 0.5
-			nlerp(q2, changeAmnt);
 		}
 
 		float result = (this.x * q2.x) + (this.y * q2.y) + (this.z * q2.z) + (this.w * q2.w);
