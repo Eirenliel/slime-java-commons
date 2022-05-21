@@ -829,22 +829,15 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 			result = -result;
 		}
 
-		// Set the first and second scale for the interpolation
-		float scale0 = 1 - t;
-		float scale1 = t;
+		// Get the angle between the 2 quaternions,
+		// and then store the sin() of that angle
+		float theta = FastMath.acos(result);
+		float invSinTheta = 1f / FastMath.sin(theta);
 
-		// Check if the angle between the 2 quaternions was big enough to
-		// warrant such calculations
-		if ((1 - result) > 0.1f) {// Get the angle between the 2 quaternions,
-			// and then store the sin() of that angle
-			float theta = FastMath.acos(result);
-			float invSinTheta = 1f / FastMath.sin(theta);
-
-			// Calculate the scale for q1 and q2, according to the angle and
-			// it's sine value
-			scale0 = FastMath.sin((1 - t) * theta) * invSinTheta;
-			scale1 = FastMath.sin((t * theta)) * invSinTheta;
-		}
+		// Calculate the scale for q1 and q2, according to the angle and
+		// its sine value
+		float scale0 = FastMath.sin((1 - t) * theta) * invSinTheta;
+		float scale1 = FastMath.sin((t * theta)) * invSinTheta;
 
 		// Calculate the x, y, z and w values for the quaternion by using a
 		// special
@@ -881,23 +874,15 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 			result = -result;
 		}
 
-		// Set the first and second scale for the interpolation
-		float scale0 = 1 - changeAmnt;
-		float scale1 = changeAmnt;
+		// Get the angle between the 2 quaternions, and then store the sin()
+		// of that angle
+		float theta = FastMath.acos(result);
+		float invSinTheta = 1f / FastMath.sin(theta);
 
-		// Check if the angle between the 2 quaternions was big enough to
-		// warrant such calculations
-		if ((1 - result) > 0.1f) {
-			// Get the angle between the 2 quaternions, and then store the sin()
-			// of that angle
-			float theta = FastMath.acos(result);
-			float invSinTheta = 1f / FastMath.sin(theta);
-
-			// Calculate the scale for q1 and q2, according to the angle and
-			// it's sine value
-			scale0 = FastMath.sin((1 - changeAmnt) * theta) * invSinTheta;
-			scale1 = FastMath.sin((changeAmnt * theta)) * invSinTheta;
-		}
+		// Calculate the scale for q1 and q2, according to the angle and
+		// its sine value
+		float scale0 = FastMath.sin((1 - changeAmnt) * theta) * invSinTheta;
+		float scale1 = FastMath.sin((changeAmnt * theta)) * invSinTheta;
 
 		// Calculate the x, y, z and w values for the quaternion by using a
 		// special
