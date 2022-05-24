@@ -19,4 +19,3 @@ build
 .project
 .classpath
 .settings/
-!.settings/org.eclipse.jdt.core.prefs
