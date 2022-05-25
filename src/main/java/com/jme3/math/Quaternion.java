@@ -816,7 +816,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 		return ang;
 	}
 
-	public Quaternion pureSlerpThis(Quaternion q2, float t) {
+	public Quaternion pureSlerpLocal(Quaternion q2, float t) {
 		// make it nice and symmetrical
 		Quaternion q1 = this;
 
@@ -866,10 +866,10 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 
 	/**
 	 * @deprecated
-	 *	Direct call to {@link #slerpThis()}.
+	 *	Direct call to {@link #slerpLocal()}.
 	 */
 	public Quaternion slerp(Quaternion q2, float t) {
-		return this.slerpThis(q2, t);
+		return this.slerpLocal(q2, t);
 	}
 
 	/**
@@ -878,22 +878,22 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	 * @param q2 Final interpolation value
 	 * @param t The amount diffrence
 	 */
-	public Quaternion slerpThis(Quaternion q2, float t) {
+	public Quaternion slerpLocal(Quaternion q2, float t) {
 		// make it nice and symmetrical
 		Quaternion q1 = this;
 
 		float rw = q1.w*q2.w + q1.x*q2.x + q1.y*q2.y + q1.z*q2.z;
 		
 		if (rw < 0) {
-			return this.pureSlerpThis(q2.negated(), t);
+			return this.pureSlerpLocal(q2.negated(), t);
 		} else {
-			return this.pureSlerpThis(q2, t);
+			return this.pureSlerpLocal(q2, t);
 		}
 	}
 
 
 	public Quaternion pureSlerp(Quaternion q1, Quaternion q2, float t) {
-		return q1.clone().pureSlerpThis(q2, t);
+		return q1.clone().pureSlerpLocal(q2, t);
 	}
 
 	/**
@@ -908,9 +908,9 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 		float rw = q1.w*q2.w + q1.x*q2.x + q1.y*q2.y + q1.z*q2.z;
 		
 		if (rw < 0) {
-			return q1.clone().pureSlerpThis(q2.negated(), t);
+			return q1.clone().pureSlerpLocal(q2.negated(), t);
 		} else {
-			return q1.clone().pureSlerpThis(q2, t);
+			return q1.clone().pureSlerpLocal(q2, t);
 		}
 	}
 
