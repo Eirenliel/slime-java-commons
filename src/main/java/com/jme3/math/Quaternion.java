@@ -803,6 +803,99 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 		return angle;
 	}
 
+	public float angleBetween(Quaternion q1, Quaternion q2) {
+		float w = q1.w*q2.w + q1.x*q2.x + q1.y*q2.y + q1.z*q2.z;
+		float x = q1.w*q2.x - q1.x*q2.w - q1.y*q2.z + q1.z*q2.y;
+		float y = q1.w*q2.y + q1.x*q2.z - q1.y*q2.w - q1.z*q2.x;
+		float z = q1.w*q2.z - q1.x*q2.y + q1.y*q2.x - q1.z*q2.w;
+
+		// compute cosine and sine of the angle between
+		// do so in a numerically stable way
+		float ang = FastMath.atan2(FastMath.sqrt(x*x + y*y + z*z), w);
+
+		return ang;
+	}
+
+	public Quaternion pureSlerpThis(Quaternion q2, float t) {
+		// make it nice and symmetrical
+		Quaternion q1 = this;
+
+		// get q2 relative to q1
+		// float rw = q1.w * q2.w + q1.x * q2.x + q1.y * q2.y + q1.z * q2.z;
+		float rx = q1.w * q2.x - q1.x * q2.w - q1.y * q2.z + q1.z * q2.y;
+		float ry = q1.w * q2.y + q1.x * q2.z - q1.y * q2.w - q1.z * q2.x;
+		float rz = q1.w * q2.z - q1.x * q2.y + q1.y * q2.x - q1.z * q2.w;
+
+		// compute theta robustly
+		float theta = FastMath.atan2(FastMath.sqrt(rx * rx + ry * ry + rz * rz), w);
+
+		// compute interpolation variables
+		float s0 = FastMath.sin((1.0f - t) * theta);
+		float s1 = FastMath.sin(t * theta);
+
+		// compute interpolated quaternion
+		float sw = s0 * q1.w + s1 * q2.w;
+		float sx = s0 * q1.x + s1 * q2.x;
+		float sy = s0 * q1.y + s1 * q2.y;
+		float sz = s0 * q1.z + s1 * q2.z;
+
+		// compute the length of the quaternion
+		float mag = FastMath.sqrt(sw * sw + sx * sx + sy * sy + sz * sz);
+
+		if (mag > 0.0f) {
+			float iMag = 1.0f / mag;
+			this.w = iMag * sw;
+			this.x = iMag * sx;
+			this.y = iMag * sy;
+			this.z = iMag * sz;
+
+		} else if (t < 0.5f) {
+			// this.w = q1.w;
+			// this.x = q1.x;
+			// this.y = q1.y;
+			// this.z = q1.z;
+		} else {
+			this.w = q2.w;
+			this.x = q2.x;
+			this.y = q2.y;
+			this.z = q2.z;
+		}
+
+		return this;
+	}
+
+	/**
+	 * @deprecated
+	 *	Direct call to {@link #slerpThis()}.
+	 */
+	public Quaternion slerp(Quaternion q2, float t) {
+		return this.slerpThis(q2, t);
+	}
+
+	/**
+	 * Sets the values of this quaternion to the slerp from itself to q2 by t
+	 *
+	 * @param q2 Final interpolation value
+	 * @param t The amount diffrence
+	 */
+	public Quaternion slerpThis(Quaternion q2, float t) {
+		// make it nice and symmetrical
+		Quaternion q1 = this;
+
+		float rw = q1.w*q2.w + q1.x*q2.x + q1.y*q2.y + q1.z*q2.z;
+		
+		if (rw < 0) {
+			return this.pureSlerpThis(q2.negated(), t);
+		} else {
+			return this.pureSlerpThis(q2, t);
+		}
+	}
+
+
+	public Quaternion pureSlerp(Quaternion q1, Quaternion q2, float t) {
+		return q1.clone().pureSlerpThis(q2, t);
+	}
+
 	/**
 	 * <code>slerp</code> sets this quaternion's value as an interpolation
 	 * between two other quaternions.
@@ -812,101 +905,13 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	 * @param t the amount to interpolate between the two quaternions.
 	 */
 	public Quaternion slerp(Quaternion q1, Quaternion q2, float t) {
-		// Create a local quaternion to store the interpolated quaternion
-		if (q1.x == q2.x && q1.y == q2.y && q1.z == q2.z && q1.w == q2.w) {
-			this.set(q1);
-			return this;
+		float rw = q1.w*q2.w + q1.x*q2.x + q1.y*q2.y + q1.z*q2.z;
+		
+		if (rw < 0) {
+			return q1.clone().pureSlerpThis(q2.negated(), t);
+		} else {
+			return q1.clone().pureSlerpThis(q2, t);
 		}
-
-		float result = (q1.x * q2.x) + (q1.y * q2.y) + (q1.z * q2.z) + (q1.w * q2.w);
-
-		if (result < 0.0f) {
-			// Negate the second quaternion and the result of the dot product
-			q2.x = -q2.x;
-			q2.y = -q2.y;
-			q2.z = -q2.z;
-			q2.w = -q2.w;
-			result = -result;
-		}
-
-		// Set the first and second scale for the interpolation
-		float scale0 = 1 - t;
-		float scale1 = t;
-
-		// Check if the angle between the 2 quaternions was big enough to
-		// warrant such calculations
-		if ((1 - result) > 0.0f) {
-			// Get the angle between the 2 quaternions,
-			// and then store the sin() of that angle
-			float theta = FastMath.acos(result);
-			float invSinTheta = 1f / FastMath.sin(theta);
-
-			// Calculate the scale for q1 and q2, according to the angle and
-			// its sine value
-			scale0 = FastMath.sin((1 - t) * theta) * invSinTheta;
-			scale1 = FastMath.sin((t * theta)) * invSinTheta;
-		}
-
-		// Calculate the x, y, z and w values for the quaternion by using a
-		// special
-		// form of linear interpolation for quaternions.
-		this.x = (scale0 * q1.x) + (scale1 * q2.x);
-		this.y = (scale0 * q1.y) + (scale1 * q2.y);
-		this.z = (scale0 * q1.z) + (scale1 * q2.z);
-		this.w = (scale0 * q1.w) + (scale1 * q2.w);
-
-		// Return the interpolated quaternion
-		return this;
-	}
-
-	/**
-	 * Sets the values of this quaternion to the slerp from itself to q2 by
-	 * changeAmnt
-	 *
-	 * @param q2 Final interpolation value
-	 * @param changeAmnt The amount diffrence
-	 */
-	public void slerp(Quaternion q2, float changeAmnt) {
-		if (this.x == q2.x && this.y == q2.y && this.z == q2.z && this.w == q2.w) {
-			return;
-		}
-
-		float result = (this.x * q2.x) + (this.y * q2.y) + (this.z * q2.z) + (this.w * q2.w);
-
-		if (result < 0.0f) {
-			// Negate the second quaternion and the result of the dot product
-			q2.x = -q2.x;
-			q2.y = -q2.y;
-			q2.z = -q2.z;
-			q2.w = -q2.w;
-			result = -result;
-		}
-
-		// Set the first and second scale for the interpolation
-		float scale0 = 1 - changeAmnt;
-		float scale1 = changeAmnt;
-
-		// Check if the angle between the 2 quaternions was big enough to
-		// warrant such calculations
-		if ((1 - result) > 0.0f) {
-			// Get the angle between the 2 quaternions,
-			// and then store the sin() of that angle
-			float theta = FastMath.acos(result);
-			float invSinTheta = 1f / FastMath.sin(theta);
-
-			// Calculate the scale for q1 and q2, according to the angle and
-			// its sine value
-			scale0 = FastMath.sin((1 - changeAmnt) * theta) * invSinTheta;
-			scale1 = FastMath.sin((changeAmnt * theta)) * invSinTheta;
-		}
-
-		// Calculate the x, y, z and w values for the quaternion by using a
-		// special
-		// form of linear interpolation for quaternions.
-		this.x = (scale0 * this.x) + (scale1 * q2.x);
-		this.y = (scale0 * this.y) + (scale1 * q2.y);
-		this.z = (scale0 * this.z) + (scale1 * q2.z);
-		this.w = (scale0 * this.w) + (scale1 * q2.w);
 	}
 
 	/**
@@ -1496,6 +1501,18 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 		y *= -1;
 		z *= -1;
 		w *= -1;
+	}
+
+	/**
+	 * <code>negate</code> returns the negated quaternion.
+	 *
+	 */
+	public Quaternion negated() {
+		x *= -1;
+		y *= -1;
+		z *= -1;
+		w *= -1;
+		return this;
 	}
 
 	/**
