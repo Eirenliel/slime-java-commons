@@ -804,14 +804,14 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	}
 
 	public float angleBetween(Quaternion q1, Quaternion q2) {
-		float w = q1.w*q2.w + q1.x*q2.x + q1.y*q2.y + q1.z*q2.z;
-		float x = q1.w*q2.x - q1.x*q2.w - q1.y*q2.z + q1.z*q2.y;
-		float y = q1.w*q2.y + q1.x*q2.z - q1.y*q2.w - q1.z*q2.x;
-		float z = q1.w*q2.z - q1.x*q2.y + q1.y*q2.x - q1.z*q2.w;
+		float w = q1.w * q2.w + q1.x * q2.x + q1.y * q2.y + q1.z * q2.z;
+		float x = q1.w * q2.x - q1.x * q2.w - q1.y * q2.z + q1.z * q2.y;
+		float y = q1.w * q2.y + q1.x * q2.z - q1.y * q2.w - q1.z * q2.x;
+		float z = q1.w * q2.z - q1.x * q2.y + q1.y * q2.x - q1.z * q2.w;
 
 		// compute cosine and sine of the angle between
 		// do so in a numerically stable way
-		float ang = FastMath.atan2(FastMath.sqrt(x*x + y*y + z*z), w);
+		float ang = FastMath.atan2(FastMath.sqrt(x * x + y * y + z * z), w);
 
 		return ang;
 	}
@@ -865,8 +865,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	}
 
 	/**
-	 * @deprecated
-	 *	Direct call to {@link #slerpLocal()}.
+	 * @deprecated Direct call to {@link #slerpLocal()}.
 	 */
 	public Quaternion slerp(Quaternion q2, float t) {
 		return this.slerpLocal(q2, t);
@@ -882,10 +881,10 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 		// make it nice and symmetrical
 		Quaternion q1 = this;
 
-		float rw = q1.w*q2.w + q1.x*q2.x + q1.y*q2.y + q1.z*q2.z;
-		
+		float rw = q1.w * q2.w + q1.x * q2.x + q1.y * q2.y + q1.z * q2.z;
+
 		if (rw < 0) {
-			return this.pureSlerpLocal(q2.negated(), t);
+			return this.pureSlerpLocal(q2.normalizeLocal().negated(), t);
 		} else {
 			return this.pureSlerpLocal(q2, t);
 		}
@@ -905,12 +904,12 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	 * @param t the amount to interpolate between the two quaternions.
 	 */
 	public Quaternion slerp(Quaternion q1, Quaternion q2, float t) {
-		float rw = q1.w*q2.w + q1.x*q2.x + q1.y*q2.y + q1.z*q2.z;
-		
+		float rw = q1.w * q2.w + q1.x * q2.x + q1.y * q2.y + q1.z * q2.z;
+
 		if (rw < 0) {
-			return q1.clone().pureSlerpLocal(q2.negated(), t);
+			return q1.normalized().pureSlerpLocal(q2.normalized().negated(), t);
 		} else {
-			return q1.clone().pureSlerpLocal(q2, t);
+			return q1.normalized().pureSlerpLocal(q2.normalized(), t);
 		}
 	}
 
@@ -1410,23 +1409,9 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 		return w * w + x * x + y * y + z * z;
 	}
 
-	// /**
-	// * <code>normalize</code> normalizes the current <code>Quaternion</code>
-	// * @deprecated The naming of this method doesn't follow convention.
-	// * Please use {@link Quaternion#normalizeLocal() } instead.
-	// */
-	// @Deprecated
-	// public void normalize() {
-	// float n = FastMath.invSqrt(norm());
-	// x *= n;
-	// y *= n;
-	// z *= n;
-	// w *= n;
-	// }
-
 	/**
-	 * <code>normalize</code> normalizes the current <code>Quaternion</code>.
-	 * The result is stored internally.
+	 * <code>normalizeLocal</code> normalizes the current
+	 * <code>Quaternion</code>. The result is stored internally.
 	 */
 	public Quaternion normalizeLocal() {
 		float n = FastMath.invSqrt(norm());
@@ -1435,6 +1420,20 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 		z *= n;
 		w *= n;
 		return this;
+	}
+
+	/**
+	 * <code>normalize</code> returns the normalized <code>Quaternion</code>.
+	 */
+	public Quaternion normalized() {
+		Quaternion q = this.clone();
+
+		float n = FastMath.invSqrt(q.norm());
+		q.x *= n;
+		q.y *= n;
+		q.z *= n;
+		q.w *= n;
+		return q;
 	}
 
 	/**
@@ -1508,11 +1507,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	 *
 	 */
 	public Quaternion negated() {
-		x *= -1;
-		y *= -1;
-		z *= -1;
-		w *= -1;
-		return this;
+		return new Quaternion(-x, -y, -z, -w);
 	}
 
 	/**
