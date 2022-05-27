@@ -821,13 +821,13 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 		Quaternion q1 = this;
 
 		// get q2 relative to q1
-		// float rw = q1.w * q2.w + q1.x * q2.x + q1.y * q2.y + q1.z * q2.z;
+		float rw = q1.w * q2.w + q1.x * q2.x + q1.y * q2.y + q1.z * q2.z;
 		float rx = q1.w * q2.x - q1.x * q2.w - q1.y * q2.z + q1.z * q2.y;
 		float ry = q1.w * q2.y + q1.x * q2.z - q1.y * q2.w - q1.z * q2.x;
 		float rz = q1.w * q2.z - q1.x * q2.y + q1.y * q2.x - q1.z * q2.w;
 
 		// compute theta robustly
-		float theta = FastMath.atan2(FastMath.sqrt(rx * rx + ry * ry + rz * rz), w);
+		float theta = FastMath.atan2(FastMath.sqrt(rx * rx + ry * ry + rz * rz), rw);
 
 		// compute interpolation variables
 		float s0 = FastMath.sin((1.0f - t) * theta);
