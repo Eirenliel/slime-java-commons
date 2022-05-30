@@ -803,11 +803,11 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 		return angle;
 	}
 
-	public float angleBetween(Quaternion q1, Quaternion q2) {
-		float w = q1.w * q2.w + q1.x * q2.x + q1.y * q2.y + q1.z * q2.z;
-		float x = q1.w * q2.x - q1.x * q2.w - q1.y * q2.z + q1.z * q2.y;
-		float y = q1.w * q2.y + q1.x * q2.z - q1.y * q2.w - q1.z * q2.x;
-		float z = q1.w * q2.z - q1.x * q2.y + q1.y * q2.x - q1.z * q2.w;
+	public float angleBetween(Quaternion q2) {
+		float w = this.w * q2.w + this.x * q2.x + this.y * q2.y + this.z * q2.z;
+		float x = this.w * q2.x - this.x * q2.w - this.y * q2.z + this.z * q2.y;
+		float y = this.w * q2.y + this.x * q2.z - this.y * q2.w - this.z * q2.x;
+		float z = this.w * q2.z - this.x * q2.y + this.y * q2.x - this.z * q2.w;
 
 		// compute cosine and sine of the angle between
 		// do so in a numerically stable way
@@ -872,7 +872,8 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	}
 
 	/**
-	 * Sets the values of this quaternion to the slerp from itself to q2 by t
+	 * Sets the values of this normalized quaternion from itself to the
+	 * normalized quaternion q2 by t
 	 *
 	 * @param q2 Final interpolation value
 	 * @param t The amount diffrence
@@ -884,7 +885,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 		float rw = q1.w * q2.w + q1.x * q2.x + q1.y * q2.y + q1.z * q2.z;
 
 		if (rw < 0) {
-			return this.pureSlerpLocal(q2.normalizeLocal().negated(), t);
+			return this.pureSlerpLocal(q2.negate(), t);
 		} else {
 			return this.pureSlerpLocal(q2, t);
 		}
@@ -892,12 +893,12 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 
 
 	public Quaternion pureSlerp(Quaternion q1, Quaternion q2, float t) {
-		return q1.clone().pureSlerpLocal(q2, t);
+		return set(q1).pureSlerpLocal(q2, t);
 	}
 
 	/**
 	 * <code>slerp</code> sets this quaternion's value as an interpolation
-	 * between two other quaternions.
+	 * between two other normalized quaternions.
 	 *
 	 * @param q1 the first quaternion.
 	 * @param q2 the second quaternion.
@@ -907,9 +908,9 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 		float rw = q1.w * q2.w + q1.x * q2.x + q1.y * q2.y + q1.z * q2.z;
 
 		if (rw < 0) {
-			return q1.normalized().pureSlerpLocal(q2.normalized().negated(), t);
+			return set(q1).pureSlerpLocal(q2.negate(), t);
 		} else {
-			return q1.normalized().pureSlerpLocal(q2.normalized(), t);
+			return set(q1).pureSlerpLocal(q2, t);
 		}
 	}
 
@@ -1425,7 +1426,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	/**
 	 * <code>normalize</code> returns the normalized <code>Quaternion</code>.
 	 */
-	public Quaternion normalized() {
+	public Quaternion normalize() {
 		Quaternion q = this.clone();
 
 		float n = FastMath.invSqrt(q.norm());
@@ -1492,21 +1493,20 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	}
 
 	/**
-	 * <code>negate</code> inverts the values of the quaternion.
-	 *
+	 * <code>negate</code> inverts the values of the quaternion. and returns it
 	 */
-	public void negate() {
-		x *= -1;
-		y *= -1;
-		z *= -1;
-		w *= -1;
+	public Quaternion negateLocal() {
+		x = -x;
+		y = -y;
+		z = -z;
+		w = -w;
+		return this;
 	}
 
 	/**
 	 * <code>negate</code> returns the negated quaternion.
-	 *
 	 */
-	public Quaternion negated() {
+	public Quaternion negate() {
 		return new Quaternion(-x, -y, -z, -w);
 	}
 
