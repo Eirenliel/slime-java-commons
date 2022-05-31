@@ -847,14 +847,13 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 			this.y = iMag * sy;
 			this.z = iMag * sz;
 
-		} else if (t < 0.5f) {
-			// this == q1, no need to do anything.
-		} else {
+		} else if (t >= 0.5f) {
 			this.w = q2.w;
 			this.x = q2.x;
 			this.y = q2.y;
 			this.z = q2.z;
 		}
+		// else this == q1, no need to do anything.
 
 		return this;
 	}
