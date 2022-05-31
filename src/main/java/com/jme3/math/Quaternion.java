@@ -1487,7 +1487,8 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	}
 
 	/**
-	 * <code>negateLocal</code> inverts the values of the quaternion and returns it.
+	 * <code>negateLocal</code> inverts the values of the quaternion and returns
+	 * it.
 	 */
 	public Quaternion negateLocal() {
 		x = -x;
