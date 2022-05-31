@@ -811,9 +811,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 
 		// compute cosine and sine of the angle between
 		// do so in a numerically stable way
-		float ang = FastMath.atan2(FastMath.sqrt(x * x + y * y + z * z), w);
-
-		return ang;
+		return FastMath.atan2(FastMath.sqrt(x * x + y * y + z * z), w);
 	}
 
 	public Quaternion pureSlerpLocal(Quaternion q2, float t) {
@@ -850,10 +848,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 			this.z = iMag * sz;
 
 		} else if (t < 0.5f) {
-			// this.w = q1.w;
-			// this.x = q1.x;
-			// this.y = q1.y;
-			// this.z = q1.z;
+			// this == q1, no need to do anything.
 		} else {
 			this.w = q2.w;
 			this.x = q2.x;
@@ -908,9 +903,9 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 		float rw = q1.w * q2.w + q1.x * q2.x + q1.y * q2.y + q1.z * q2.z;
 
 		if (rw < 0) {
-			return set(q1).pureSlerpLocal(q2.negate(), t);
+			return pureSlerp(q1, q2.negate(), t);
 		} else {
-			return set(q1).pureSlerpLocal(q2, t);
+			return pureSlerp(q1, q2, t);
 		}
 	}
 
@@ -1493,7 +1488,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	}
 
 	/**
-	 * <code>negate</code> inverts the values of the quaternion. and returns it
+	 * <code>negateLocal</code> inverts the values of the quaternion and returns it.
 	 */
 	public Quaternion negateLocal() {
 		x = -x;
@@ -1504,7 +1499,7 @@ public final class Quaternion implements Cloneable, java.io.Serializable {
 	}
 
 	/**
-	 * <code>negate</code> returns the negated quaternion.
+	 * <code>negate</code> returns a negated copy of the quaternion.
 	 */
 	public Quaternion negate() {
 		return new Quaternion(-x, -y, -z, -w);
