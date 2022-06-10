@@ -1,16 +1,6 @@
 package io.eiren.util.collections;
 
-import java.util.AbstractList;
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.ConcurrentModificationException;
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.RandomAccess;
-import java.util.Spliterator;
-import java.util.Spliterators;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -472,7 +462,7 @@ public class FastList<E> extends AbstractList<E>
 
 	@Override
 	public Spliterator<E> spliterator() {
-		return Spliterators.spliterator(array, 0, size - 1, Spliterator.ORDERED);
+		return Spliterators.spliterator(array, 0, size, Spliterator.ORDERED);
 	}
 
 	/**
